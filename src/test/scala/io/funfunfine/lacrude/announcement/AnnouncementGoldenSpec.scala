@@ -7,4 +7,5 @@ import munit.DisciplineSuite
 
 class AnnouncementGoldenSpec extends DisciplineSuite {
   checkAll("Announcement Codec is correct", GoldenCodecTests[Announcement].goldenCodec)
+  checkAll("Announcement.Incoming Codec is correct", GoldenCodecTests[Announcement.Data].goldenCodec)
 }

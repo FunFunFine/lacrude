@@ -54,7 +54,10 @@ lazy val root = (project in file("."))
       "eu.timepit"    %% "refined-shapeless"     % EstaticoNewtypesVersion,
       "org.typelevel" %% "spire"                 % "0.17.0",
       "com.softwaremill.sttp.tapir" %% "tapir-core" % TapirVersion,
-      "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % TapirVersion
+      "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-derevo" % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-refined" % TapirVersion
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.0" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
