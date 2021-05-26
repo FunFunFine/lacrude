@@ -8,6 +8,9 @@ import derevo.circe.magnolia.{encoder => magnoliaEncoder}
 import derevo.derive
 import derevo.scalacheck.{arbitrary => derevoArbitrary}
 
+import tofu.logging.Loggable
+import tofu.logging.derivation.loggable
+
 import io.funfunfine.lacrude.announcement.types.PhoneNumber
 
 import io.circe.magnolia.configured.Configuration
@@ -26,13 +29,18 @@ import eu.timepit.refined.types.string.NonEmptyString
 
 object types {
 
-  @derive(magnoliaDecoder, magnoliaEncoder, derevoArbitrary, eqv, schema)
+  @derive(magnoliaDecoder, magnoliaEncoder, derevoArbitrary, eqv, schema, loggable)
   final case class PhoneNumber(
       value: NonEmptyString //TODO: regex phone & arbitrary
   )
+
+  implicit val loggablePosStringContravariant: Loggable[NonEmptyString] = Loggable[String].contramap[NonEmptyString](
+    pf => pf.value
+  )
+
 }
 
-@derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema)
+@derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
 final case class Announcement(
     id: Announcement.Id,
     data: Announcement.Data
@@ -40,7 +48,19 @@ final case class Announcement(
 
 object Announcement {
 
-  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema)
+  implicit val loggablePosFloatContravariant: Loggable[PosFloat] = Loggable[Float].contramap[PosFloat](
+    pf => pf.value
+  )
+
+  implicit val loggablePosIntContravariant: Loggable[PosInt] = Loggable[Int].contramap[PosInt](
+    pf => pf.value
+  )
+
+  implicit val loggablePosStringContravariant: Loggable[NonEmptyString] = Loggable[String].contramap[NonEmptyString](
+    pf => pf.value
+  )
+
+  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
   final case class Data(
       price: PosFloat,
       deal: Deal,
@@ -50,7 +70,7 @@ object Announcement {
       seller: Announcement.Seller
   )
 
-  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema)
+  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
   final case class Patch(
       price: Option[PosFloat],
       deal: Option[Deal],
@@ -63,7 +83,7 @@ object Announcement {
   implicit val announcementConfiguration: Configuration =
     Configuration.default.withDiscriminator("type").withSnakeCaseMemberNames.withSnakeCaseConstructorNames
 
-  @derive(magnoliaDecoder, magnoliaEncoder, derevoArbitrary, eqv, schema) //TODO: make it newtype
+  @derive(magnoliaDecoder, magnoliaEncoder, derevoArbitrary, eqv, schema, loggable) //TODO: make it newtype
   final case class Id(value: String) extends AnyVal
 
   object Id {
@@ -72,10 +92,10 @@ object Announcement {
 
   }
 
-  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema)
+  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
   final case class Seller(name: NonEmptyString, phoneNumber: PhoneNumber)
 
-  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema)
+  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
   sealed trait Subject {
     def area: PosFloat
   }
@@ -86,7 +106,7 @@ object Announcement {
   }
 }
 
-@derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema)
+@derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
 sealed trait Deal
 
 object Deal {
@@ -94,12 +114,12 @@ object Deal {
 
   final case class Sale() extends Deal
 
-  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema)
+  @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
   final case class Rent(period: Rent.Period) extends Deal
 
   final object Rent {
 
-    @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema)
+    @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
     sealed trait Period
 
     final object Period {
