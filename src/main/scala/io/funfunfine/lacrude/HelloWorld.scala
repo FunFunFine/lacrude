@@ -6,10 +6,6 @@ import cats.implicits._
 import io.circe.Encoder
 import io.circe.Json
 
-
-import org.http4s.EntityEncoder
-import org.http4s.circe.CirceEntityCodec._
-
 trait HelloWorld[F[_]] {
   def hello(n: HelloWorld.Name): F[HelloWorld.Greeting]
 }
@@ -33,7 +29,6 @@ object HelloWorld {
         ("message", Json.fromString(a.greeting))
       )
     }
-
 
   }
 

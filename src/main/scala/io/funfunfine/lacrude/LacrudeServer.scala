@@ -1,11 +1,16 @@
 package io.funfunfine.lacrude
 
 import scala.concurrent.ExecutionContext.global
+
 import cats.implicits._
+
+import io.funfunfine.lacrude.announcement.api.LacrudeRoutes
+
 import cats.effect.ConcurrentEffect
 import cats.effect.Timer
+
 import fs2.Stream
-import io.funfunfine.lacrude.announcement.api.LacrudeRoutes
+
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder

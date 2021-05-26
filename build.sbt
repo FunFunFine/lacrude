@@ -8,6 +8,8 @@ val DerevoVersion = "0.12.5"
 
 val EstaticoNewtypesVersion = "0.9.25"
 
+val TapirVersion = "0.18.0-M11"
+
 lazy val root = (project in file("."))
   .settings(
     organization := "io.funfunfine",
@@ -25,12 +27,17 @@ lazy val root = (project in file("."))
       "org.http4s"    %% "http4s-circe"          % Http4sVersion,
       "org.http4s"    %% "http4s-dsl"            % Http4sVersion,
       "io.circe"      %% "circe-generic"         % CirceVersion,
+      "io.circe"      %% "circe-refined"         % CirceVersion,
+      "io.circe"      %% "circe-golden"          % "0.3.0"                % Test,
       "org.scalameta" %% "munit"                 % MunitVersion           % Test,
+      "org.scalameta" %% "munit-scalacheck"      % MunitVersion           % Test,
       "org.typelevel" %% "munit-cats-effect-2"   % MunitCatsEffectVersion % Test,
+      "org.typelevel" %% "discipline-munit"      % "1.0.9"                % Test,
       "ch.qos.logback" % "logback-classic"       % LogbackVersion,
       "org.scalameta" %% "svm-subs"              % "20.2.0",
       "tf.tofu"       %% "derevo-cats"           % DerevoVersion,
       "tf.tofu"       %% "derevo-circe-magnolia" % DerevoVersion,
+      "tf.tofu"       %% "derevo-scalacheck"     % DerevoVersion,
       "tf.tofu"       %% "tofu"                  % TofuVersion,
       "tf.tofu"       %% "tofu-logging"          % TofuVersion,
       "tf.tofu"       %% "tofu-zio-interop"      % TofuVersion,
@@ -45,7 +52,9 @@ lazy val root = (project in file("."))
       "eu.timepit"    %% "refined-scodec"        % EstaticoNewtypesVersion,
       "eu.timepit"    %% "refined-scopt"         % EstaticoNewtypesVersion,
       "eu.timepit"    %% "refined-shapeless"     % EstaticoNewtypesVersion,
-      "org.typelevel" %% "spire"                 % "0.17.0"
+      "org.typelevel" %% "spire"                 % "0.17.0",
+      "com.softwaremill.sttp.tapir" %% "tapir-core" % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % TapirVersion
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.0" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
