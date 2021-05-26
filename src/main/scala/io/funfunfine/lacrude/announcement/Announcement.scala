@@ -64,11 +64,29 @@ object Announcement {
   final case class Data(
       price: PosFloat,
       deal: Deal,
-      kind: Announcement.Subject,
+      subject: Announcement.Subject,
       roomsAmount: Option[PosInt],
       address: NonEmptyString,
       seller: Announcement.Seller
   )
+  /*
+  * create table announcements (
+  *   id varchar primary key,
+  *   price float not null,
+  *   deal_id varchar not null,
+  *   rent_id varchar references rents,
+  *   sale_id varchar references sales check (rent_id is null or sale_id is null), but not both
+  *   rooms_amount int,
+  *   address varchar,
+  *   seller_name varchar,
+  *   seller_number varchar
+  *)
+  *
+  * create table rents (...)
+  * create table sales (...)
+  *
+  *
+  * */
 
   @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
   final case class Patch(
@@ -115,7 +133,7 @@ object Deal {
   final case class Sale() extends Deal
 
   @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
-  final case class Rent(period: Rent.Period) extends Deal
+  final case class Rent(period: Rent.Period) extends Deal //todo: make it layered ADT
 
   final object Rent {
 
