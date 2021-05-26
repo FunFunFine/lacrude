@@ -1,13 +1,14 @@
 package io.funfunfine.lacrude
 
-import cats.effect.Sync
+import cats.effect.Concurrent
 import cats.implicits._
 import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
+import org.http4s.circe.CirceEntityCodec._
 
 object LacrudeRoutes {
 
-  def jokeRoutes[F[_]: Sync](J: Jokes[F]): HttpRoutes[F] = {
+  def jokeRoutes[F[_]: Concurrent](J: Jokes[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
     HttpRoutes.of[F] {
@@ -19,7 +20,7 @@ object LacrudeRoutes {
     }
   }
 
-  def helloWorldRoutes[F[_]: Sync](H: HelloWorld[F]): HttpRoutes[F] = {
+  def helloWorldRoutes[F[_]: Concurrent](H: HelloWorld[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
     HttpRoutes.of[F] {
