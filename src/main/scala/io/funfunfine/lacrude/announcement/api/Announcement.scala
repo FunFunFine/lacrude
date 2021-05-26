@@ -14,7 +14,6 @@ import eu.timepit.refined.collection._
 import eu.timepit.refined.generic._
 import eu.timepit.refined.string._
 
-object types {}
 
 case class Announcement(
     id: Announcement.Id,
