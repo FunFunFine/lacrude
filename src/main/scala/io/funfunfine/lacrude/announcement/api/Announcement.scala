@@ -8,7 +8,7 @@ import eu.timepit.refined.types.string.NonEmptyString
 import eu.timepit.refined.types.numeric.{PosFloat, PosInt}
 import eu.timepit.refined.numeric._
 import eu.timepit.refined.api.{RefType, Refined}
-import eu.timepit.refined.boolean._с
+import eu.timepit.refined.boolean._
 import eu.timepit.refined.char._
 import eu.timepit.refined.collection._
 import eu.timepit.refined.generic._
