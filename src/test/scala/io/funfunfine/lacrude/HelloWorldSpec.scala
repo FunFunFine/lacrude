@@ -1,6 +1,7 @@
 package io.funfunfine.lacrude
 
 import cats.effect.IO
+import io.funfunfine.lacrude.announcement.api.LacrudeRoutes
 import org.http4s._
 import org.http4s.implicits._
 import munit.CatsEffectSuite
@@ -12,10 +13,7 @@ class HelloWorldSpec extends CatsEffectSuite {
   }
 
   test("HelloWorld returns hello world message") {
-    assertIO(
-      retHelloWorld.flatMap(_.as[String]),
-      "{\"message\":\"Hello, world\"}"
-    )
+    assertIO(retHelloWorld.flatMap(_.as[String]), "{\"message\":\"Hello, world\"}")
   }
 
   private[this] val retHelloWorld: IO[Response[IO]] = {

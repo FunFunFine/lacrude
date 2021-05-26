@@ -1,15 +1,17 @@
-package io.funfunfine.lacrude
+package io.funfunfine.lacrude.announcement.api
 
-import cats.effect.Concurrent
 import cats.implicits._
+import cats.effect.Sync
+import io.funfunfine.lacrude.HelloWorld
+import io.funfunfine.lacrude.Jokes
 import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
 import org.http4s.circe.CirceEntityCodec._
 
 object LacrudeRoutes {
 
-  def jokeRoutes[F[_]: Concurrent](J: Jokes[F]): HttpRoutes[F] = {
-    val dsl = new Http4sDsl[F]{}
+  def jokeRoutes[F[_]: Sync](J: Jokes[F]): HttpRoutes[F] = {
+    val dsl = new Http4sDsl[F] {}
     import dsl._
     HttpRoutes.of[F] {
       case GET -> Root / "joke" =>
@@ -20,14 +22,14 @@ object LacrudeRoutes {
     }
   }
 
-  def helloWorldRoutes[F[_]: Concurrent](H: HelloWorld[F]): HttpRoutes[F] = {
-    val dsl = new Http4sDsl[F]{}
+  def helloWorldRoutes[F[_]: Sync](H: HelloWorld[F]): HttpRoutes[F] = {
+    val dsl = new Http4sDsl[F] {}
     import dsl._
     HttpRoutes.of[F] {
       case GET -> Root / "hello" / name =>
         for {
           greeting <- H.hello(HelloWorld.Name(name))
-          resp <- Ok(greeting)
+          resp     <- Ok(greeting)
         } yield resp
     }
   }

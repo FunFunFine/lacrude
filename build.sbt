@@ -1,9 +1,12 @@
-val Http4sVersion = "1.0.0-M22"
-val CirceVersion = "0.14.0-M7"
-val MunitVersion = "0.7.26"
+val Http4sVersion = "0.21.23"
+val CirceVersion = "0.13.0"
+val MunitVersion = "0.7.20"
 val LogbackVersion = "1.2.3"
-val MunitCatsEffectVersion = "1.0.3"
-val CatsEffectVersion = "3.1.1"
+val MunitCatsEffectVersion = "0.13.0"
+val TofuVersion = "0.10.2"
+val DerevoVersion = "0.12.5"
+
+val EstaticoNewtypesVersion = "0.9.25"
 
 lazy val root = (project in file("."))
   .settings(
@@ -11,21 +14,76 @@ lazy val root = (project in file("."))
     name := "lacrude",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.13.6",
+    scalacOptions ++= Seq(
+      "-Xfatal-warnings",
+      "-Ymacro-annotations",
+      "-Wconf:cat=unused-imports:info,any:warning-verbose"
+    ),
     libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-blaze-server" % Http4sVersion,
-      "org.http4s" %% "http4s-blaze-client" % Http4sVersion,
-      "org.http4s" %% "http4s-circe" % Http4sVersion,
-      "org.http4s" %% "http4s-dsl" % Http4sVersion,
-      "io.circe" %% "circe-generic" % CirceVersion,
-      "org.typelevel" %% "cats-effect" % CatsEffectVersion,
-      "org.scalameta" %% "munit" % MunitVersion % Test,
-      "org.typelevel" %% "munit-cats-effect-3" % MunitCatsEffectVersion % Test,
-      "ch.qos.logback" % "logback-classic" % LogbackVersion,
-      "org.scalameta" %% "svm-subs" % "20.2.0"
+      "org.http4s"    %% "http4s-blaze-server"   % Http4sVersion,
+      "org.http4s"    %% "http4s-blaze-client"   % Http4sVersion,
+      "org.http4s"    %% "http4s-circe"          % Http4sVersion,
+      "org.http4s"    %% "http4s-dsl"            % Http4sVersion,
+      "io.circe"      %% "circe-generic"         % CirceVersion,
+      "org.scalameta" %% "munit"                 % MunitVersion           % Test,
+      "org.typelevel" %% "munit-cats-effect-2"   % MunitCatsEffectVersion % Test,
+      "ch.qos.logback" % "logback-classic"       % LogbackVersion,
+      "org.scalameta" %% "svm-subs"              % "20.2.0",
+      "tf.tofu"       %% "derevo-cats"           % DerevoVersion,
+      "tf.tofu"       %% "derevo-circe-magnolia" % DerevoVersion,
+      "tf.tofu"       %% "tofu"                  % TofuVersion,
+      "tf.tofu"       %% "tofu-logging"          % TofuVersion,
+      "tf.tofu"       %% "tofu-zio-interop"      % TofuVersion,
+      "io.estatico"   %% "newtype"               % "0.4.4",
+      "eu.timepit"    %% "refined"               % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-cats"          % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-eval"          % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-jsonpath"      % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-pureconfig"    % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-scalacheck"    % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-scalaz"        % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-scodec"        % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-scopt"         % EstaticoNewtypesVersion,
+      "eu.timepit"    %% "refined-shapeless"     % EstaticoNewtypesVersion,
+      "org.typelevel" %% "spire"                 % "0.17.0"
     ),
-    addCompilerPlugin(
-      "org.typelevel" %% "kind-projector" % "0.13.0" cross CrossVersion.full
-    ),
-    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
+    addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.0" cross CrossVersion.full),
+    addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
     testFrameworks += new TestFramework("munit.Framework")
   )
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    buildInfoPackage := "io.funfunfine.lacrude.buildinfo",
+    buildInfoOptions += BuildInfoOption.ToJson,
+    buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
+      scalaVersion,
+      sbtVersion,
+      git.branch,
+      git.gitHeadCommit,
+      git.gitHeadMessage,
+      git.gitHeadCommitDate,
+      git.gitCurrentBranch
+    )
+  )
+  .settings(
+    Defaults.itSettings,
+    inConfig(IntegrationTest)(scalafixConfigSettings(IntegrationTest)),
+    coverageFailOnMinimum := false,
+    assembly / mainClass := Some("io.funfunfine.lacrude.Main"),
+    licenseConfigurations := Set("compile", "provided", "test", "it")
+  )
+
+ThisBuild / semanticdbEnabled := true
+ThisBuild / semanticdbVersion := "4.4.18"
+ThisBuild / scalafixDependencies ++= Seq(
+  "com.github.liancheng" %% "organize-imports" % "0.5.0",
+  "com.github.vovapolu"  %% "scaluzzi"         % "0.1.18",
+  "com.eed3si9n.fix"     %% "scalafix-noinfer" % "0.1.0-M1"
+)
+
+addCommandAlias(
+  "lint",
+  "; it:scalafmtAll; test:scalafmtAll; scalafmtAll; it:scalafixAll; test:scalafixAll; scalafixAll;"
+)
