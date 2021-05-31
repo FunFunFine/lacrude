@@ -5,6 +5,7 @@ val LogbackVersion = "1.2.3"
 val MunitCatsEffectVersion = "0.13.0"
 val TofuVersion = "0.10.2"
 val DerevoVersion = "0.12.5"
+val DoobieVersion = "0.12.1"
 
 val EstaticoNewtypesVersion = "0.9.25"
 
@@ -62,7 +63,11 @@ lazy val root = (project in file("."))
       "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"       % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-http4s"  % TapirVersion,
-      "com.softwaremill.sttp.tapir" %% "tapir-redoc-http4s"       % TapirVersion
+      "com.softwaremill.sttp.tapir" %% "tapir-redoc-http4s"       % TapirVersion,
+      "org.tpolecat"                %% "doobie-core"              % DoobieVersion,
+      "org.tpolecat"                %% "doobie-postgres"          % DoobieVersion,
+      "org.tpolecat"                %% "doobie-postgres-circe"    % DoobieVersion,
+      "com.dedipresta" %% "scala-crypto" % "1.0.0"
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.0" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
