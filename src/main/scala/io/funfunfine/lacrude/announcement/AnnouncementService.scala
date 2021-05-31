@@ -20,7 +20,7 @@ trait AnnouncementService[F[_]] {
 
 object AnnouncementService extends LoggingCompanion[AnnouncementService] {
 
-  def make[F[_]: Monad: AnnouncementService.Log: Logs.Universal]: AnnouncementService[F] = new AnnouncementService[F] {
+  def make[F[_]: Monad: Logs.Universal: AnnouncementService.Log]: AnnouncementService[F] = new AnnouncementService[F] {
 
     override def create(
         data: Announcement.Data

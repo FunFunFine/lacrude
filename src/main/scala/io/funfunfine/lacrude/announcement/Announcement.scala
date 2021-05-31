@@ -70,23 +70,23 @@ object Announcement {
       seller: Announcement.Seller
   )
   /*
-  * create table announcements (
-  *   id varchar primary key,
-  *   price float not null,
-  *   deal_id varchar not null,
-  *   rent_id varchar references rents,
-  *   sale_id varchar references sales check (rent_id is null or sale_id is null), but not both
-  *   rooms_amount int,
-  *   address varchar,
-  *   seller_name varchar,
-  *   seller_number varchar
-  *)
-  *
-  * create table rents (...)
-  * create table sales (...)
-  *
-  *
-  * */
+   * create table announcements (
+   *   id varchar primary key,
+   *   price float not null,
+   *   deal_id varchar not null,
+   *   rent_id varchar references rents,
+   *   sale_id varchar references sales check (rent_id is null or sale_id is null), but not both
+   *   rooms_amount int,
+   *   address varchar,
+   *   seller_name varchar,
+   *   seller_number varchar
+   *)
+   *
+   * create table rents (...)
+   * create table sales (...)
+   *
+   *
+   * */
 
   @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
   final case class Patch(
@@ -133,16 +133,11 @@ object Deal {
   final case class Sale() extends Deal
 
   @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
-  final case class Rent(period: Rent.Period) extends Deal //todo: make it layered ADT
+  sealed trait Rent extends Deal
 
   final object Rent {
 
-    @derive(customizableDecoder, customizableEncoder, derevoArbitrary, eqv, schema, loggable)
-    sealed trait Period
-
-    final object Period {
-      final case object Monthly extends Period
-      final case object Daily extends Period
-    }
+    final case object Monthly extends Rent
+    final case object Daily extends Rent
   }
 }

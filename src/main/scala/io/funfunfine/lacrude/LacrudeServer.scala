@@ -1,27 +1,42 @@
 package io.funfunfine.lacrude
 
 import scala.concurrent.ExecutionContext.global
+
+import cats.MonadThrow
+import cats.syntax.semigroupk._
+
+import tofu.Delay
+import tofu.WithRun
+import tofu.logging.Logs
+import tofu.syntax.monadic._
+
+import io.funfunfine.lacrude.announcement.AnnouncementService
+import io.funfunfine.lacrude.announcement.api.AnnouncementEndpoints
 import io.funfunfine.lacrude.announcement.api.AnnouncementRoutes
+import io.funfunfine.lacrude.announcement.api.RequestContext
+
 import cats.effect.ConcurrentEffect
 import cats.effect.ContextShift
 import cats.effect.Resource
 import cats.effect.Sync
 import cats.effect.Timer
-import cats.syntax.semigroupk._
-import tofu.syntax.monadic._
-import io.funfunfine.lacrude.announcement.api.AnnouncementEndpoints
+
+import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
+import sttp.tapir.openapi.circe.yaml._
+import sttp.tapir.swagger.http4s.SwaggerHttp4s
+
 import org.http4s.HttpRoutes
 import org.http4s.implicits._
 import org.http4s.server.Server
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.Logger
-import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
-import sttp.tapir.openapi.circe.yaml._
-import sttp.tapir.swagger.http4s.SwaggerHttp4s
 
 object LacrudeServer {
 
-  def resource[F[_]: ConcurrentEffect: ContextShift](implicit T: Timer[F]): F[Resource[F, Server[F]]] = {
+  def resource[
+      F[_]: ConcurrentEffect: ContextShift: Timer,
+      G[_]: WithRun[*[_], F, RequestContext]: MonadThrow: Delay
+  ]: F[Resource[F, Server[F]]] = {
 
     val swaggerRoute: F[HttpRoutes[F]] =
       for {
@@ -37,9 +52,15 @@ object LacrudeServer {
           )
       } yield swagger.routes[F]
 
+    implicit val logs = Logs.contextual[G, RequestContext]
+
     for {
       swagger <- swaggerRoute
-      httpApp = Logger.httpApp(logHeaders = true, logBody = true)((AnnouncementRoutes.routes[F] <+> swagger).orNotFound)
+      announcementService = AnnouncementService.make[G]
+      httpApp =
+        Logger.httpApp(logHeaders = true, logBody = true)(
+          (AnnouncementRoutes.routes[F, G](announcementService) <+> swagger).orNotFound
+        )
     } yield BlazeServerBuilder[F](global)
       .bindHttp(8080, "0.0.0.0")
       .withHttpApp(httpApp)

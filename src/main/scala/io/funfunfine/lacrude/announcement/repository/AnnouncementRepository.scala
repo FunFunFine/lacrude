@@ -6,5 +6,3 @@ trait AnnouncementRepository[F[_]] {
   def get(id: Announcement.Id): F[Option[Announcement]]
 
 }
-
-

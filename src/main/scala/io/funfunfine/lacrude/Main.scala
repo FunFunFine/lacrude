@@ -1,22 +1,27 @@
 package io.funfunfine.lacrude
 
-import cats.effect.ExitCode
-import cats.effect.IO
-import cats.effect.IOApp
-import tofu.syntax.console._
+import zio.ExitCode
+import zio.RIO
+import zio.Task
+import zio.interop.catz._
+import zio.interop.catz.implicits._
 
-object Main extends IOApp {
+import tofu.zioInstances.implicits._
+
+import io.funfunfine.lacrude.announcement.api.RequestContext
+
+object Main extends CatsApp {
 
   def run(args: List[String]) =
     LacrudeServer
-      .resource[IO]
+      .resource[Task, RIO[RequestContext, *]]
       .flatMap(
         _.use(
-          _ => IO.never
+          _ => Task.never
         )
       )
-      .handleErrorWith(
-        error => putErrLn[IO](s"Error on startup: $error")
+      .catchAllCause(
+        error => console.putStrLn(s"Error on startup: $error")
       )
-      .as(ExitCode.Success)
+      .as(ExitCode.success)
 }
