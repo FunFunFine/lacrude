@@ -16,7 +16,7 @@ import org.http4s.HttpRoutes
 
 object AnnouncementEndpoints {
 
-  def endpoints: List[Endpoint[_, _, _, _]] =
+  def definitions: List[Endpoint[_, _, _, _]] =
     createAnnouncement :: readAnnouncements :: readAnnouncement :: updateAnnouncement :: deleteAnnouncement :: Nil
   val baseEndpoint: Endpoint[Unit, Unit, Unit, Any] = endpoint.in("announcements")
 
