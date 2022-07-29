@@ -1,33 +1,32 @@
-Реализовать сервис, с помощью которого пользователь сможет управлять своими объявлениями: добавлять, редактировать, просматривать, удалять.
-- Смоделировать объявление об объекте недвижимости в терминах scala.
-- Предложить правила валидации полей, реализовать валидатор.
-- Выбрать хранилище объявлений и реализовать работу с ним.
-- Спроектировать и реализовать API.
+The task for the initial job interview was this:
 
-Можно (и нужно) использовать любые подходящие библиотеки, протоколы и технологии.
+Implement a service with which the user can manage their ads: add, edit, view, delete.
+- Model a real estate ad in terms of scala.
+- Suggest field validation rules, implement a validator.
+- Select ad storage and implement work with it.
+- Design and implement API.
 
-Данные, которые должны быть в объявлении (* - обязательные поля с корректными значениями):
+You can (and should) use any suitable libraries, protocols and technologies.
 
-- уникальный идентификатор*
-- цена в рублях*
-- тип сделки* (аренда/продажа)
-- для аренды:
-    - период* (посуточная/по месяцам)
-- тип объекта* (квартира/комната)
-- для комнаты:
-    - площадь*
-    - количество комнат в квартире
-    - площадь кухни
-- для квартиры:
-    - общая площадь*
-    - жилая площадь
-    - площадь кухни
-- количество комнат
-- адрес*
-- данные продавца:
-    - имя*
-    - телефон*
+Data that should be in the ad (* - required fields with correct values):
+
+- unique identificator*
+- price in rubles*
+- transaction type* (rent/sale)
+- for rent:
+    - period* (daily/monthly)
+- object type* (apartment/room)
+- for the room:
+    - square*
+    - number of rooms in the apartment
+    - kitchen area
+- for an apartment:
+    - total area*
+    - living space
+    - kitchen area
+- number of rooms
+- address*
+- seller details:
+    - name*
+    - telephone*
   
-
-## Вопросы
-- Предполагается, что есть внешняя система пользователей?
